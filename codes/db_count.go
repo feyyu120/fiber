@@ -32,7 +32,7 @@ func main() {
 	fmt.Println("db connected sucessfully")
 	app.Get("/data", func(c fiber.Ctx) error {
 		var count int
-		err = DB.QueryRow(`select count(name) from users`).Scan(&count)
+		err = DB.QueryRow(`select count(*) from users`).Scan(&count)
 		if err != nil {
 			return fiber.NewError(500, "can't load")
 		}
