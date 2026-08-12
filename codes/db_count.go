@@ -32,8 +32,6 @@ func main() {
 	fmt.Println("db connected sucessfully")
 	app.Get("/data", func(c fiber.Ctx) error {
 		var count int
-
-		_, err = DB.Exec(`delete from users where id>$1`, 20)
 		err = DB.QueryRow(`select count(name) from users`).Scan(&count)
 		if err != nil {
 			return fiber.NewError(500, "can't load")
