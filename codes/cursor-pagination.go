@@ -4,11 +4,13 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"os"
 
 	"strconv"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/logger"
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	//"github.com/gofiber/fiber/v3/middleware/paginate"
 )
@@ -22,9 +24,12 @@ var DB *sql.DB
 
 func main() {
 	var err error
+	if err = godotenv.Load(); err != nil {
+		log.Println("can't load or missing .env file")
+	}
 	app := fiber.New()
 	app.Use(logger.New())
-	db_url := "postgresql://neondb_owner:npg_RTXP8gfVB7pu@ep-small-rain-axw9gkiv-pooler.c-4.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+	db_url := os.Getenv("db_url")
 	DB, err = sql.Open("postgres", db_url)
 
 	if err != nil {
