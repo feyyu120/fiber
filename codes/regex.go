@@ -6,7 +6,8 @@ import (
 )
 
 func main() {
-	regex := regexp.MustCompile(`^[0-9]{9}$`)
+	text := "Contact us at support@google.com or admin@yahoo.com"
+	rege
 
-	fmt.Println(regex.MatchString("092711861"))
+	fmt.Println(regex.MatchString(text))
 }
