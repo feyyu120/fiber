@@ -6,8 +6,11 @@ import (
 )
 
 func main() {
-	text := "Contact us at support@google.com or admin@yahoo.com"
-	rege
-
-	fmt.Println(regex.MatchString(text))
+	text := "Contact us at support@google.com or 0919626703"
+	emailRegex := regexp.MustCompile(`[a-zA-Z0-0]+@[a-zA-Z]+\.[a-zA-Z]{2,}`)
+	//phoneRegex := regexp.MustCompile(`^[0-9]$`)
+	email := emailRegex.FindString(text)
+	//phone := phoneRegex.FindString(text)
+	fmt.Println("email is:", email)
+	//fmt.Println("phone is :", phone)
 }
