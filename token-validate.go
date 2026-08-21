@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v3"
@@ -28,6 +29,30 @@ func GenerateToken(userId int) (string, error) {
 
 }
 
+func ValidateToken(c fiber.Ctx) error {
+	auth := c.Get("Authorization")
+	if auth == "" || !strings.HasPrefix(strings.ToLower(auth), "bearer ") {
+		return fiber.NewError(401, "token missing")
+	}
+
+	token := strings.SplitN(auth, " ", 2)
+	verified, err := jwt.Parse(token[1], func(t *jwt.Token) (any, error) {
+		return secret, nil
+	})
+	if err != nil || !verified.Valid {
+		return fiber.NewError(403, "invalid token")
+	}
+
+	claims, ok := verified.Claims.(jwt.MapClaims)
+	if !ok {
+		return fiber.NewError(401, "invalid token format")
+	}
+
+	c.Locals("userId", claims)
+	return c.Next()
+
+}
+
 func main() {
 	app := fiber.New()
 	app.Use(logger.New())
@@ -45,6 +70,15 @@ func main() {
 		})
 
 	})
+	app.Get("/profile", ValidateToken, func(c fiber.Ctx) error {
+		user := c.Locals("userId")
+		return c.JSON(fiber.Map{
+			"msg":  "user is logged in",
+			"user": user,
+		})
+
+	})
+
 	log.Println("")
 	app.Listen(":3000", fiber.ListenConfig{DisableStartupMessage: true})
 }
