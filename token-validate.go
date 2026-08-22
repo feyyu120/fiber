@@ -72,6 +72,7 @@ func main() {
 	})
 	app.Get("/profile", ValidateToken, func(c fiber.Ctx) error {
 		user := c.Locals("userId")
+
 		return c.JSON(fiber.Map{
 			"msg":  "user is logged in",
 			"user": user,
